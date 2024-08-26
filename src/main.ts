@@ -1,4 +1,4 @@
-import {Logger, ValidationPipe} from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -8,9 +8,10 @@ import {
 import fastify from 'fastify';
 
 import { AppModule } from './app.module';
-import { ResponseInterceptor } from "./common/middlewares/response.interceptor";
-import { applyRequestLogger } from "./common/middlewares/request-log.middleware";
-import { ErrorHandler } from "./common/middlewares/error-handler";
+import { ResponseInterceptor } from './common/middlewares/response.interceptor';
+import { applyRequestLogger } from './common/middlewares/request-log.middleware';
+import { ErrorHandler } from './common/middlewares/error-handler';
+import { setupSwagger } from './swagger.config';
 
 async function bootstrap() {
   const fastifyApp = fastify({
@@ -18,12 +19,12 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create<NestFastifyApplication>(
-      AppModule,
-      new FastifyAdapter(fastifyApp),
-      {
-        bufferLogs: true,
-        logger: console,
-      },
+    AppModule,
+    new FastifyAdapter(fastifyApp),
+    {
+      bufferLogs: true,
+      logger: console,
+    },
   );
 
   app.enableCors({
@@ -32,20 +33,24 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type'],
   });
 
-  const logger = new Logger;
-  app.useLogger(logger)
+  const logger = new Logger();
+  app.useLogger(logger);
 
   applyRequestLogger(fastifyApp, logger);
 
   app.setGlobalPrefix('api');
 
   app.useGlobalPipes(
-      new ValidationPipe({
-        transform: true,
-      }),
+    new ValidationPipe({
+      transform: true,
+    }),
   );
 
   const configService = app.get(ConfigService);
+
+  if (configService.get('doc.enableApiDoc')) {
+    setupSwagger(app, 'api');
+  }
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new ErrorHandler(logger));
@@ -53,7 +58,10 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   await app.listen(configService.get('port')!, '0.0.0.0', () => {
-    logger.log(`Obrio started on port ${configService.get('port')!}`, 'main.ts');
+    logger.log(
+      `Obrio started on port ${configService.get('port')!}`,
+      'main.ts',
+    );
   });
 }
 void bootstrap();
