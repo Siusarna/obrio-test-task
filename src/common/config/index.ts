@@ -12,6 +12,10 @@ export default (): ConfigType => ({
       limit: 100,
     },
   ],
+  redis: {
+    host: env.REDIS_HOST || 'localhost',
+    port: getNumericConfig(env.REDIS_PORT, 6379),
+  },
   doc: {
     enableApiDoc: env.SWAGGER_ENABLED === 'true',
   },
