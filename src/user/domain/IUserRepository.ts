@@ -1,7 +1,10 @@
 import { User } from './types/user.dto';
 
 export interface IUserRepository {
-  create: (data: { email: string }) => Promise<User>;
+  create: (data: {
+    email: string;
+    marketingData: Record<string, unknown>;
+  }) => Promise<User>;
   getByEmail: (email: string) => Promise<User>;
   getById: (id: number) => Promise<User>;
 }

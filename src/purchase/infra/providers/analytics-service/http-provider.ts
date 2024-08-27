@@ -2,7 +2,8 @@ import { IAnalyticsServiceProvider } from '../../../domain/IAnalyticsServiceProv
 import axios from 'axios';
 
 export class AnalyticsServiceHttpProvider implements IAnalyticsServiceProvider {
-  private readonly BASE_URL = 'https://webhook.site/0170e89e-fce0-428a-b4bb-fb35da29c5a9';
+  private readonly BASE_URL =
+    'https://webhook.site/0170e89e-fce0-428a-b4bb-fb35da29c5a9';
   constructor() {}
 
   async sendEvent(data) {

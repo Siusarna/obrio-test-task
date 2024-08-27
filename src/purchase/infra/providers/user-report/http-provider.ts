@@ -2,7 +2,8 @@ import axios from 'axios';
 import { IUserReportProvider } from '../../../domain/IUserReportProvider';
 
 export class UserReportHttpProvider implements IUserReportProvider {
-  private readonly BASE_URL = 'https://webhook.site/0170e89e-fce0-428a-b4bb-fb35da29c5a9';
+  private readonly BASE_URL =
+    'https://webhook.site/0170e89e-fce0-428a-b4bb-fb35da29c5a9';
   constructor() {}
 
   async sendReport(data) {
@@ -13,7 +14,6 @@ export class UserReportHttpProvider implements IUserReportProvider {
 
       return true;
     } catch (e) {
-      console.log(e)
       throw e;
     }
   }

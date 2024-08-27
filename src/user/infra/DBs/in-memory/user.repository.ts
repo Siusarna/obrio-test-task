@@ -7,9 +7,10 @@ export class UserRepository implements IUserRepository {
   private readonly users: User[] = [];
 
   async create(data): Promise<User> {
-    const user = {
+    const user: User = {
       id: this.users.length + 1,
       email: data.email,
+      marketingData: data.marketingData,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
